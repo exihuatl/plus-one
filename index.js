@@ -26,7 +26,7 @@ const BASE_URL =
   ];
 
   const message = `
-    write a JSON based on the data provided with the following keys: industries, benefits, companyName, location. Pick one at random from the list of possible values.
+    write a JSON based on the data provided with the following keys: industries, benefits, companyName, location. Select from the list of possible values that suits best to the provided source. There should only be one object returned.
   `;
 
   const messages = [
