@@ -1,13 +1,9 @@
 import axios from "axios";
 import promisePoller from "promise-poller";
 import _ from "lodash";
-import {
-  mockResponse,
-  possibleBenefits,
-  possibleIndustries,
-} from "./constants.js";
-import source from "./source.js";
+import { benefits, industries } from "./constants.js";
 import { API_KEY } from "./env.js";
+import { hebeSource } from "./sources/index.js";
 
 const BASE_URL =
   "https://g6ygf5mh0i.execute-api.eu-west-1.amazonaws.com/development/api/v1/openai/";
@@ -30,49 +26,31 @@ const BASE_URL =
   ];
 
   const message = `
-    write a JSON based on the data provided.
+    write a JSON based on the data provided with the following keys: industries, benefits, companyName, location. Pick one at random from the list of possible values.
   `;
 
   const messages = [
     {
       role: "system",
       content:
-        "You return an output that conforms to the javascript method JSON.parse(OUTPUT). Keys should be in english, and values - in polish (do not translate the following: 'benefits', 'industries').",
+        "You return JSON output. Keys should be in english, and values - in polish.",
     },
     {
       role: "user",
       content: `
-        data source:
-        ###
-        ${JSON.stringify(source.data.map((x) => _.pick(x, keys)))}
-        ###
+        SOURCE = ${JSON.stringify(hebeSource.data.map((x) => _.pick(x, keys)))}
       `,
     },
     {
       role: "user",
       content: `
-        possible benefits source:
-        ###
-        ${JSON.stringify(possibleBenefits)}
-        ###
+        BENEFITS = ${JSON.stringify(benefits)}
       `,
     },
     {
       role: "user",
       content: `
-        possible industries source:
-        ###
-        ${JSON.stringify(possibleIndustries)}
-        ###
-      `,
-    },
-    {
-      role: "user",
-      content: `
-        output JSON example:
-        ###
-        ${JSON.stringify(mockResponse)}
-        ###
+        INDUSTRIES = ${JSON.stringify(industries)}
       `,
     },
     {
@@ -105,7 +83,11 @@ const BASE_URL =
           url: "result/" + requestIdResponse.data.request_id,
           headers,
         }).then((response) => {
-          console.log(new Date(), ":  ", response.data.status_code);
+          console.log(
+            new Date().toLocaleTimeString(),
+            ":  ",
+            response.data.status_code,
+          );
 
           if (response.data.finished) {
             return Promise.resolve(response.data);
@@ -113,8 +95,8 @@ const BASE_URL =
             return Promise.reject(response.data);
           }
         }),
-      retries: 10,
-      interval: 15000, // Poll every 5 seconds
+      retries: 20,
+      interval: 5000, // Poll every 5 seconds
     });
 
     console.log("@result", result.response);
