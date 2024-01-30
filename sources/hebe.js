@@ -5,7 +5,7 @@ export default {
       id: "pl_887789452",
       user_id: "pl_438047828",
       user_uuid: "23e9e97d-9f96-4f05-9a88-ab1a3d91ca3f",
-      country: "",
+      country: "pl",
       category_id: 3903,
       status: "active",
       title: "Hebe| BEZ CV| Konsultant| Sprzedawca| Szczecin| Gryf",
