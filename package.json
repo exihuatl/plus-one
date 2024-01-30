@@ -1,0 +1,19 @@
+{
+  "name": "plus-one",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node ./index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.7",
+    "lodash": "^4.17.21",
+    "prettier": "^3.2.4",
+    "promise-poller": "^1.9.1"
+  }
+}
