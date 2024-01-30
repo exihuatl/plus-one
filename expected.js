@@ -1,0 +1,20 @@
+export const expected = {
+  companyName: "",
+  tagline: "",
+  description: "",
+  headquarters: {
+    city: "",
+    zipCode: "",
+    region: "",
+    streetName: "",
+    streetNumber: "",
+    lat: "",
+    lng: "",
+  },
+  email: "",
+  phone: "",
+  industry: "",
+  companyUrl: "",
+  benefits: [],
+  logoUrl: "",
+};
