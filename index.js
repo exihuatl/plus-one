@@ -3,7 +3,8 @@ import promisePoller from "promise-poller";
 import _ from "lodash";
 import { benefits, industries } from "./constants.js";
 import { API_KEY } from "./env.js";
-import { hebeSource } from "./sources/index.js";
+import { randstadtSource } from "./sources/index.js";
+import { expected } from "./expected.js";
 
 const BASE_URL =
   "https://g6ygf5mh0i.execute-api.eu-west-1.amazonaws.com/development/api/v1/openai/";
@@ -18,15 +19,19 @@ const BASE_URL =
   const keys = [
     "description",
     "title",
-    "location",
-    "url",
     "apply_url",
     "categories",
     "parameters",
+    "country",
   ];
 
   const message = `
-    write a JSON based on the data provided with the following keys: industries, benefits, companyName, location. Select from the list of possible values that suits best to the provided source. There should only be one object returned.
+    Write a JSON object based on the data provided that conforms to the EXPECTED.
+
+    To fill headquarters field search the web. Retrieved location should be within the country. Country code is available in field "country".
+    To fill companyUrl, email, phone fields - search the web. If there are multiple values, select the first one.
+
+    Select from the list of possible values that suits best to the provided source.
   `;
 
   const messages = [
@@ -38,7 +43,13 @@ const BASE_URL =
     {
       role: "user",
       content: `
-        SOURCE = ${JSON.stringify(hebeSource.data.map((x) => _.pick(x, keys)))}
+        SOURCE = ${JSON.stringify(randstadtSource.data.map((x) => _.pick(x, keys)))}
+      `,
+    },
+    {
+      role: "user",
+      content: `
+        EXPECTED = ${JSON.stringify(expected)}
       `,
     },
     {
