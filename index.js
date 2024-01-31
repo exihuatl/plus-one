@@ -2,8 +2,8 @@ import axios from "axios";
 import promisePoller from "promise-poller";
 import _ from "lodash";
 import { benefits, industries } from "./constants.js";
-import { API_KEY } from "./env.js";
-import { randstadtSource } from "./sources/index.js";
+import { API_KEY, GOOGLE_API_ID, GOOGLE_API_KEY } from "./env.js";
+import { hebeSource } from "./sources/index.js";
 import { expected } from "./expected.js";
 
 const BASE_URL =
@@ -15,6 +15,13 @@ const BASE_URL =
     "Content-Type": "application/json",
     Accept: "application/json",
   };
+
+  const companyName = "hebe";
+
+  const googleSearchResult = await axios.get(
+    `https://www.googleapis.com/customsearch/v1?q=${companyName}+polska+siedziba+kontakt+adres+-gowork&key=${GOOGLE_API_KEY}&cx=${GOOGLE_API_ID}`,
+  );
+
   const path = "chat-completion/submit";
   const keys = [
     "description",
@@ -23,15 +30,24 @@ const BASE_URL =
     "categories",
     "parameters",
     "country",
+    "logoUrl",
   ];
+
+  // googleSearchResult.data.items.slice(0, 2).map((x) => console.log("@#@#", x));
 
   const message = `
     Write a JSON object based on the data provided that conforms to the EXPECTED.
 
-    To fill headquarters field search the web. Retrieved location should be within the country. Country code is available in field "country".
-    To fill companyUrl, email, phone fields - search the web. If there are multiple values, select the first one.
+    To fill headquarters, companyUrl, email, phone fields search for them, but do not use real time data.
+    If there are multiple values, select the first one.
+    Retrieved location should be within the country.Country code is available in field "country".
 
-    Select from the list of possible values that suits best to the provided source.
+    For benefits and industry - select from the list of possible values that suits best to the provided source.
+    For the logoUrl field, use the largest square image available.
+
+    Answer only when you are sure that the data is correct.
+
+    Translate everything to english.
   `;
 
   const messages = [
@@ -41,28 +57,34 @@ const BASE_URL =
         "You return JSON output. Keys should be in english, and values - in polish.",
     },
     {
-      role: "user",
+      role: "system",
       content: `
-        SOURCE = ${JSON.stringify(randstadtSource.data.map((x) => _.pick(x, keys)))}
+        GOOGLE_SEARCH = ${JSON.stringify(googleSearchResult.data.items.slice(0, 2).map((x) => _.pick(x, ["title", "link", "snippet"])))}
       `,
     },
     {
-      role: "user",
+      role: "system",
       content: `
-        EXPECTED = ${JSON.stringify(expected)}
+      SOURCE = ${JSON.stringify(hebeSource.data.map((x) => _.pick(x, keys)))};
       `,
     },
     {
-      role: "user",
+      role: "system",
       content: `
-        BENEFITS = ${JSON.stringify(benefits)}
-      `,
+  EXPECTED = ${JSON.stringify(expected)};
+  `,
     },
     {
-      role: "user",
+      role: "system",
       content: `
-        INDUSTRIES = ${JSON.stringify(industries)}
-      `,
+  BENEFITS = ${JSON.stringify(benefits)};
+  `,
+    },
+    {
+      role: "system",
+      content: `
+  INDUSTRIES = ${JSON.stringify(industries)};
+  `,
     },
     {
       role: "user",
