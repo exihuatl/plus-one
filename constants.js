@@ -66,3 +66,50 @@ export const taglines = [
   "Your Future Starts Here.",
   "Expanding Opportunities, Enriching Lives.",
 ];
+
+export const recruitments = [
+  [
+    {
+      title: "Review",
+      description:
+        "Candidate applications are reviewed according to a variety of criteria associated with the job in question.",
+    },
+    {
+      title: "First conversation with the recruiter",
+      description:
+        "If your profile matches the criteria, the recruiter will schedule a quick chat with you.",
+    },
+    {
+      title: "Interview with hiring director",
+      description:
+        "Walk us through your experience and accomplishments so we can get to know you better.",
+    },
+    {
+      title: "Offer",
+      description:
+        "If you’re the best candidate for the job, we’ll make you an offer!",
+    },
+  ],
+  [
+    {
+      title: "Krok 1",
+      description:
+        "Analiza przesianej aplikacji i kontakt w celu umówienia sie na spotkanie",
+    },
+    {
+      title: "Krok 2",
+      description:
+        "Spotkanie z pracownikiem dziatu HR i bezposrednim przetozonym na danym stanowisku",
+    },
+    {
+      title: "Krok 3",
+      description:
+        "Zadanie uzupetniajace i sprawdzajace kompetencje na stanowisku (opcjonalnie)",
+    },
+    {
+      title: "Krok 4",
+      description:
+        "Oferta i przedstawienie szczegótowych warunków zatrudnienia",
+    },
+  ],
+];

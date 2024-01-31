@@ -1,7 +1,7 @@
 import axios from "axios";
 import promisePoller from "promise-poller";
 import _ from "lodash";
-import { benefits, industries } from "./constants.js";
+import { benefits, industries, recruitments } from "./constants.js";
 import { API_KEY, GOOGLE_API_ID, GOOGLE_API_KEY } from "./env.js";
 import { hebeSource } from "./sources/index.js";
 import { expected } from "./expected.js";
@@ -33,16 +33,15 @@ const BASE_URL =
     "logoUrl",
   ];
 
-  // googleSearchResult.data.items.slice(0, 2).map((x) => console.log("@#@#", x));
-
   const message = `
+    You are writing a company profile for the company in the job category.
     Write a JSON object based on the data provided that conforms to the EXPECTED.
 
     To fill headquarters, companyUrl, email, phone fields search for them, but do not use real time data.
     If there are multiple values, select the first one.
     Retrieved location should be within the country.Country code is available in field "country".
 
-    For benefits and industry - select from the list of possible values that suits best to the provided source.
+    For benefits, industry, recruitment - select from the list of possible values that suits best to the provided source.
     For the logoUrl field, use the largest square image available.
 
     Answer only when you are sure that the data is correct.
@@ -73,6 +72,12 @@ const BASE_URL =
       content: `
   EXPECTED = ${JSON.stringify(expected)};
   `,
+    },
+    {
+      role: "system",
+      content: `
+        RECRUITMENTS = ${JSON.stringify(recruitments)};
+      `,
     },
     {
       role: "system",

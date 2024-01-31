@@ -5,11 +5,8 @@ export const expected = {
   headquarters: {
     city: "",
     zipCode: "",
-    region: "",
     streetName: "",
     streetNumber: "",
-    lat: "",
-    lng: "",
   },
   email: "",
   phone: "",
@@ -17,4 +14,13 @@ export const expected = {
   companyUrl: "",
   benefits: [],
   logoUrl: "",
+  recruitment: {
+    name: "Recruitment process name",
+    steps: [
+      {
+        title: "",
+        description: "",
+      },
+    ],
+  },
 };
