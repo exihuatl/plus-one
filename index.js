@@ -3,11 +3,16 @@ import promisePoller from "promise-poller";
 import _ from "lodash";
 import { benefits, industries, recruitments } from "./constants.js";
 import { API_KEY, GOOGLE_API_ID, GOOGLE_API_KEY } from "./env.js";
-import { hebeSource } from "./sources/index.js";
+import * as sources from "./sources/index.js";
 import { expected } from "./expected.js";
 
 const BASE_URL =
   "https://g6ygf5mh0i.execute-api.eu-west-1.amazonaws.com/development/api/v1/openai/";
+
+const COMPANY = {
+  query: "kaizen+rent",
+  source: sources.kaizenSource,
+};
 
 (async function () {
   const headers = {
@@ -16,10 +21,8 @@ const BASE_URL =
     Accept: "application/json",
   };
 
-  const companyName = "hebe";
-
   const googleSearchResult = await axios.get(
-    `https://www.googleapis.com/customsearch/v1?q=${companyName}+polska+siedziba+kontakt+adres+-gowork&key=${GOOGLE_API_KEY}&cx=${GOOGLE_API_ID}`,
+    `https://www.googleapis.com/customsearch/v1?q=${COMPANY.query}+polska+siedziba+kontakt+adres+-gowork&key=${GOOGLE_API_KEY}&cx=${GOOGLE_API_ID}`,
   );
 
   const path = "chat-completion/submit";
@@ -64,7 +67,7 @@ const BASE_URL =
     {
       role: "system",
       content: `
-      SOURCE = ${JSON.stringify(hebeSource.data.map((x) => _.pick(x, keys)))};
+      SOURCE = ${JSON.stringify(COMPANY.source.data.map((x) => _.pick(x, keys)))};
       `,
     },
     {
